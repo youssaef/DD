@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- DZ Delivery Pro: Stylized Fast Scooter with Delivery Box -->
+    <!-- Delivery Box behind rider -->
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M34,42 h14 v16 h-14 z" />
+    <path
+        android:fillColor="#FFA000"
+        android:pathData="M34,48 h14 v3 h-14 z" />
+
+    <!-- Scooter Wheels -->
+    <!-- Back wheel -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,72 A7,7 0 1,0 38,58 A7,7 0 1,0 38,72 Z" />
+    <path
+        android:fillColor="#00381B"
+        android:pathData="M38,68 A3,3 0 1,0 38,62 A3,3 0 1,0 38,68 Z" />
+
+    <!-- Front wheel -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M70,72 A7,7 0 1,0 70,58 A7,7 0 1,0 70,72 Z" />
+    <path
+        android:fillColor="#00381B"
+        android:pathData="M70,68 A3,3 0 1,0 70,62 A3,3 0 1,0 70,68 Z" />
+
+    <!-- Scooter Frame & Body -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,65 L50,65 L60,54 L68,65 L73,65 L63,49 L58,49 L52,56 L46,56 L44,48 L32,48 L32,54 L38,54 Z" />
+
+    <!-- Handlebars and windshield -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M61,46 L65,40 L69,40 L69,43 L66,45 L62,51 Z" />
+
+    <!-- Headlight beam / Motion lines -->
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M69,46 L78,43 L78,47 L69,48 Z" />
+
+    <!-- Delivery Speed Lines -->
+    <path
+        android:fillColor="#80FFFFFF"
+        android:pathData="M24,53 h8 v2 h-8 z" />
+    <path
+        android:fillColor="#80FFFFFF"
+        android:pathData="M20,59 h10 v2 h-10 z" />
+    <path
+        android:fillColor="#80FFFFFF"
+        android:pathData="M25,65 h7 v2 h-7 z" />
+
+    <!-- Small Star & Crescent badge indicating Algerian pride -->
+    <path
+        android:fillColor="#FF5252"
+        android:pathData="M54,32 A5,5 0 1,0 54,22 A4,4 0 1,1 54,30 Z" />
+</vector>

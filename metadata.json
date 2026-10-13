@@ -1,0 +1,6 @@
+{
+  "name": "DZ Delivery Pro",
+  "description": "Comprehensive Algerian multi-service delivery platform with customer ordering, driver dispatch, merchant management, and central operations in Arabic & French (DZD).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DZ Delivery Pro — Tableau de bord Administration</title>
+    <!-- Brand Design Tokens & Fonts (Cairo for Arabic, Inter for Latin) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* DZ Delivery Pro Global Brand Palette */
+            --brand-primary-blue: #123B72;
+            --brand-secondary-blue: #1D5DA8;
+            --brand-blue-dark: #0C274E;
+            --brand-blue-container: #E8F1FC;
+            --brand-yellow: #FFC928;
+            --brand-yellow-hover: #E8AE00;
+            --brand-yellow-dark: #B38600;
+            --brand-yellow-container: #FFF7DB;
+            --brand-page-bg: #F4F7FC;
+            --brand-surface: #FFFFFF;
+            --brand-border: #DCE4EF;
+            --brand-text-primary: #1D2939;
+            --brand-text-secondary: #667085;
+            
+            /* Status Indicators */
+            --status-success: #12B76A;
+            --status-success-bg: #ECFDF3;
+            --status-warning: #F79009;
+            --status-warning-bg: #FEF0C7;
+            --status-error: #F04438;
+            --status-error-bg: #FEF3F2;
+            --status-info: #0BA5EC;
+            --status-info-bg: #F0F9FF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--brand-page-bg);
+            color: var(--brand-text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body[dir="rtl"] {
+            font-family: 'Cairo', 'Inter', sans-serif;
+        }
+
+        /* Top Header */
+        header {
+            background-color: var(--brand-primary-blue);
+            color: #FFFFFF;
+            padding: 0.85rem 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px rgba(18, 59, 114, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            width: 28px;
+            height: 22px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1.5px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .brand-badge-half-yellow {
+            width: 50%;
+            height: 100%;
+            background-color: var(--brand-yellow);
+        }
+
+        .brand-badge-half-blue {
+            width: 50%;
+            height: 100%;
+            background-color: var(--brand-secondary-blue);
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: #FFFFFF;
+        }
+
+        .header-subtitle {
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-top: 1px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-lang {
+            background: rgba(255, 255, 255, 0.15);
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.45rem 0.95rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-lang:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .admin-user-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--brand-yellow);
+            color: var(--brand-text-primary);
+            padding: 0.45rem 1rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Layout Container */
+        .admin-layout {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 270px;
+            background: var(--brand-surface);
+            border-inline-end: 1px solid var(--brand-border);
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--brand-text-secondary);
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .nav-item:hover {
+            background: var(--brand-blue-container);
+            color: var(--brand-primary-blue);
+        }
+
+        .nav-item.active {
+            background: var(--brand-blue-container);
+            color: var(--brand-primary-blue);
+            border-inline-start: 4px solid var(--brand-primary-blue);
+            font-weight: 700;
+        }
+
+        .nav-badge {
+            margin-inline-start: auto;
+            background: var(--brand-yellow);
+            color: var(--brand-text-primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.15rem 0.55rem;
+            border-radius: 12px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.75rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--brand-primary-blue);
+        }
+
+        .page-desc {
+            font-size: 0.9rem;
+            color: var(--brand-text-secondary);
+            margin-top: 0.35rem;
+        }
+
+        .btn-primary-cta {
+            background-color: var(--brand-yellow);
+            color: var(--brand-text-primary);
+            border: none;
+            padding: 0.7rem 1.35rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(255, 201, 40, 0.35);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-cta:hover {
+            background-color: var(--brand-yellow-hover);
+            transform: translateY(-1px);
+        }
+
+        /* KPI Metric Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: var(--brand-surface);
+            border: 1px solid var(--brand-border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 1px 3px rgba(18, 59, 114, 0.04);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .kpi-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--brand-text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .kpi-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--brand-primary-blue);
+        }
+
+        .kpi-trend {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        /* Table Card Container */
+        .table-card {
+            background: var(--brand-surface);
+            border: 1px solid var(--brand-border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(18, 59, 114, 0.04);
+            margin-bottom: 2rem;
+        }
+
+        .table-header-bar {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--brand-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .table-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--brand-primary-blue);
+        }
+
+        .table-filters {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .input-search, .select-filter {
+            padding: 0.55rem 0.95rem;
+            border: 1px solid var(--brand-border);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            background: #FFFFFF;
+            color: var(--brand-text-primary);
+            outline: none;
+            transition: border-color 0.15s ease;
+        }
+
+        .input-search:focus, .select-filter:focus {
+            border-color: var(--brand-secondary-blue);
+            box-shadow: 0 0 0 3px rgba(29, 93, 168, 0.15);
+        }
+
+        /* Data Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.88rem;
+        }
+
+        body[dir="rtl"] table {
+            text-align: right;
+        }
+
+        thead th {
+            background: var(--brand-blue-container);
+            color: var(--brand-primary-blue);
+            padding: 0.9rem 1.25rem;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border-bottom: 1px solid var(--brand-border);
+        }
+
+        tbody td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--brand-border);
+            color: var(--brand-text-primary);
+        }
+
+        tbody tr:hover {
+            background-color: #F8FAFD;
+        }
+
+        /* Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.28rem 0.7rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .badge-pending {
+            background: var(--status-warning-bg);
+            color: #B54708;
+        }
+
+        .badge-delivering {
+            background: var(--status-info-bg);
+            color: #026AA2;
+        }
+
+        .badge-delivered {
+            background: var(--status-success-bg);
+            color: #027A48;
+        }
+
+        .badge-cancelled {
+            background: var(--status-error-bg);
+            color: #B42318;
+        }
+
+        .badge-active {
+            background: var(--status-success-bg);
+            color: #027A48;
+        }
+
+        .badge-inactive {
+            background: #F2F4F7;
+            color: #667085;
+        }
+
+        .btn-action-sm {
+            background: var(--brand-surface);
+            border: 1px solid var(--brand-border);
+            color: var(--brand-primary-blue);
+            padding: 0.4rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-action-sm:hover {
+            background: var(--brand-blue-container);
+            border-color: var(--brand-secondary-blue);
+        }
+
+        .btn-action-yellow {
+            background: var(--brand-yellow);
+            border: 1px solid var(--brand-yellow-hover);
+            color: var(--brand-text-primary);
+            padding: 0.4rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-action-yellow:hover {
+            background: var(--brand-yellow-hover);
+        }
+
+        /* Section Display Switching */
+        .tab-section {
+            display: none;
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        /* Toast notification */
+        #toastNotice {
+            position: fixed;
+            bottom: 24px;
+            inset-inline-end: 24px;
+            background: var(--brand-primary-blue);
+            color: #FFFFFF;
+            padding: 0.9rem 1.4rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(18, 59, 114, 0.25);
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 1000;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-inline-start: 4px solid var(--brand-yellow);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 992px) {
+            .admin-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                border-inline-end: none;
+                border-bottom: 1px solid var(--brand-border);
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 0.75rem;
+            }
+            .nav-item {
+                white-space: nowrap;
+            }
+            .main-content {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-brand">
+            <div class="brand-badge">
+                <div class="brand-badge-half-yellow"></div>
+                <div class="brand-badge-half-blue"></div>
+            </div>
+            <div>
+                <div class="header-title" id="lblAppName">DZ Delivery Pro</div>
+                <div class="header-subtitle" id="lblAppSubtitle">Plateforme Nationale de Livraison • 58 Wilayas</div>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn-lang" id="btnLangToggle" onclick="toggleLanguage()">العربية</button>
+            <div class="admin-user-pill">
+                <span>🛡️</span>
+                <span id="lblAdminRole">Super Administrateur</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="nav-item active" onclick="switchTab('orders', this)">
+                <span>📦</span>
+                <span class="nav-title" data-i18n="nav_orders">Commandes & Dispatch</span>
+                <span class="nav-badge" id="badgeActiveOrders">14 Actives</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('drivers', this)">
+                <span>🛵</span>
+                <span class="nav-title" data-i18n="nav_drivers">Flotte Livreurs</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('merchants', this)">
+                <span>🏪</span>
+                <span class="nav-title" data-i18n="nav_merchants">Commerces Partenaires</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('customers', this)">
+                <span>👥</span>
+                <span class="nav-title" data-i18n="nav_customers">Clients & Comptes</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('stats', this)">
+                <span>📊</span>
+                <span class="nav-title" data-i18n="nav_stats">Statistiques & Revenus</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('settings', this)">
+                <span>🔒</span>
+                <span class="nav-title" data-i18n="nav_settings">Paramètres & Sécurité</span>
+            </div>
+        </aside>
+
+        <!-- Main Body -->
+        <main class="main-content">
+
+            <!-- 1. ORDERS SECTION -->
+            <section id="section-orders" class="tab-section active">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title" data-i18n="orders_title">Centre des Opérations & Dispatch</h1>
+                        <p class="page-desc" data-i18n="orders_desc">Supervision en direct des livraisons et flux en temps réel à Alger et dans 58 wilayas.</p>
+                    </div>
+                    <button class="btn-primary-cta" onclick="showToast('Rapport journalier généré')" data-i18n="btn_export">
+                        📥 Exporter le Rapport Journalier
+                    </button>
+                </div>
+
+                <!-- KPI Summary Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <span class="kpi-label" data-i18n="kpi_gmv">Volume d'Affaires Brut (GMV)</span>
+                        <span class="kpi-value" style="color: var(--brand-primary-blue);">3 845 200 DZD</span>
+                        <span class="kpi-trend" style="color: var(--status-success);">↑ +18.4% ce mois</span>
+                    </div>
+                    <div class="kpi-card">
+                        <span class="kpi-label" data-i18n="kpi_active">Commandes en Transit</span>
+                        <span class="kpi-value" style="color: var(--brand-secondary-blue);">42</span>
+                        <span class="kpi-trend" style="color: var(--brand-primary-blue);">• Délai moyen: 28 min</span>
+                    </div>
+                    <div class="kpi-card">
+                        <span class="kpi-label" data-i18n="kpi_drivers">Livreurs en Ligne</span>
+                        <span class="kpi-value" style="color: var(--status-success);">128</span>
+                        <span class="kpi-trend" style="color: var(--status-success);">🟢 94% taux d'acceptation</span>
+                    </div>
+                    <div class="kpi-card">
+                        <span class="kpi-label" data-i18n="kpi_otp">Vérifications OTP</span>
+                        <span class="kpi-value" style="color: var(--brand-yellow-dark);">99.8%</span>
+                        <span class="kpi-trend" style="color: var(--brand-primary-blue);">🛡️ 0 fraude signalée</span>
+                    </div>
+                </div>
+
+                <!-- Operational Orders Table -->
+                <div class="table-card">
+                    <div class="table-header-bar">
+                        <div class="table-title" data-i18n="table_recent_orders">Commandes Récentes en Temps Réel</div>
+                        <div class="table-filters">
+                            <input type="text" class="input-search" placeholder="Rechercher par № ou téléphone..." id="orderSearch" onkeyup="filterOrdersTable()">
+                            <select class="select-filter" id="wilayaFilter" onchange="filterOrdersTable()">
+                                <option value="">Toutes les Wilayas</option>
+                                <option value="16">16 - Alger</option>
+                                <option value="31">31 - Oran</option>
+                                <option value="25">25 - Constantine</option>
+                                <option value="19">19 - Sétif</option>
+                            </select>
+                            <select class="select-filter" id="statusFilter" onchange="filterOrdersTable()">
+                                <option value="">Tous les Statuts</option>
+                                <option value="delivering">En livraison</option>
+                                <option value="preparing">En préparation</option>
+                                <option value="delivered">Livré</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>№ Commande</th>
+                                <th>Date & Heure</th>
+                                <th>Client</th>
+                                <th>Commerce</th>
+                                <th>Wilaya</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                                <th>Livreur</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr>
+                                <td><strong>DZ-8025</strong></td>
+                                <td>13/10 14:15</td>
+                                <td>Farid Belkacem<br><small style="color:var(--brand-text-secondary)">0555 12 34 56</small></td>
+                                <td>Restaurant Didouche</td>
+                                <td>16 - Alger</td>
+                                <td><strong>2 450 DZD</strong></td>
+                                <td><span class="status-badge badge-delivering">En livraison</span></td>
+                                <td>Karim Meziane (Moto)</td>
+                                <td><button class="btn-action-sm" onclick="showToast('Suivi GPS en direct: Coordonnées reçues')">Suivi GPS</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>DZ-8024</strong></td>
+                                <td>13/10 14:02</td>
+                                <td>Amina Cherif<br><small style="color:var(--brand-text-secondary)">0770 98 76 54</small></td>
+                                <td>Pâtisserie El Mordjene</td>
+                                <td>16 - Alger</td>
+                                <td><strong>1 850 DZD</strong></td>
+                                <td><span class="status-badge badge-pending">En préparation</span></td>
+                                <td><em style="color:var(--status-warning)">En attente attribution</em></td>
+                                <td><button class="btn-action-yellow" onclick="showToast('Affectation manuelle déclenchée via Supabase')">Assigner</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>DZ-8023</strong></td>
+                                <td>13/10 13:40</td>
+                                <td>Yacine Brahimi<br><small style="color:var(--brand-text-secondary)">0661 11 22 33</small></td>
+                                <td>Supermarché Ardis</td>
+                                <td>16 - Alger</td>
+                                <td><strong>5 200 DZD</strong></td>
+                                <td><span class="status-badge badge-delivered">Livré (OTP Valide)</span></td>
+                                <td>Sofiane Boudaoud</td>
+                                <td><button class="btn-action-sm" onclick="showToast('Reçu de commande archivé')">Reçu CIB</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>DZ-8022</strong></td>
+                                <td>13/10 13:10</td>
+                                <td>Nadia Khelifi<br><small style="color:var(--brand-text-secondary)">0550 44 33 22</small></td>
+                                <td>Pharmacie Centrale Alger</td>
+                                <td>16 - Alger</td>
+                                <td><strong>1 400 DZD</strong></td>
+                                <td><span class="status-badge badge-delivered">Livré (OTP Valide)</span></td>
+                                <td>Karim Meziane (Moto)</td>
+                                <td><button class="btn-action-sm" onclick="showToast('Preuve ordonnance vérifiée')">Détails</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 2. DRIVERS SECTION -->
+            <section id="section-drivers" class="tab-section">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title" data-i18n="drivers_title">Flotte de Livreurs</h1>
+                        <p class="page-desc" data-i18n="drivers_desc">Gestion des chauffeurs partenaires, disponibilité en direct et approbations de documents.</p>
+                    </div>
+                    <button class="btn-primary-cta" onclick="showToast('Formulaire de recrutement livreur ouvert')" data-i18n="btn_add_driver">
+                        🛵 Inscrire un Nouveau Livreur
+                    </button>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header-bar">
+                        <div class="table-title" data-i18n="drivers_table_title">Livreurs Enregistrés & Vérifiés</div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Livreur</th>
+                                <th>Téléphone</th>
+                                <th>Véhicule</th>
+                                <th>Wilaya</th>
+                                <th>Statut</th>
+                                <th>Note</th>
+                                <th>Courses</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Karim Meziane</strong></td>
+                                <td>0555 11 22 33</td>
+                                <td>Moto (Sym Orbit II)</td>
+                                <td>16 - Alger</td>
+                                <td><span class="status-badge badge-active">🟢 En Ligne</span></td>
+                                <td>★ 4.9</td>
+                                <td>384</td>
+                                <td><button class="btn-action-sm" onclick="showToast('Profil livreur ouvert')">Gérer</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sofiane Boudaoud</strong></td>
+                                <td>0661 22 33 44</td>
+                                <td>Voiture (Renault Clio)</td>
+                                <td>16 - Alger</td>
+                                <td><span class="status-badge badge-active">🟢 En Ligne</span></td>
+                                <td>★ 4.8</td>
+                                <td>290</td>
+                                <td><button class="btn-action-sm" onclick="showToast('Profil livreur ouvert')">Gérer</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Samir Hamidi</strong></td>
+                                <td>0770 33 44 55</td>
+                                <td>Scooter (Peugeot Kisbee)</td>
+                                <td>31 - Oran</td>
+                                <td><span class="status-badge badge-inactive">⚪ Hors Ligne</span></td>
+                                <td>★ 4.7</td>
+                                <td>175</td>
+                                <td><button class="btn-action-sm" onclick="showToast('Profil livreur ouvert')">Gérer</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 3. MERCHANTS SECTION -->
+            <section id="section-merchants" class="tab-section">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title" data-i18n="merchants_title">Commerces & Établissements Partenaires</h1>
+                        <p class="page-desc" data-i18n="merchants_desc">Gestion du catalogue, validation des commissions et conventions partenaires.</p>
+                    </div>
+                    <button class="btn-primary-cta" onclick="showToast('Validation nouveau commerce ouverte')" data-i18n="btn_add_merchant">
+                        🏪 Conventionner un Commerce
+                    </button>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header-bar">
+                        <div class="table-title" data-i18n="merchants_table_title">Liste des Partenaires Agréés</div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Commerce</th>
+                                <th>Catégorie</th>
+                                <th>Wilaya</th>
+                                <th>Commission</th>
+                                <th>Statut</th>
+                                <th>Note</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Restaurant Didouche</strong></td>
+                                <td>Restauration (Food)</td>
+                                <td>16 - Alger</td>
+                                <td>12%</td>
+                                <td><span class="status-badge badge-active">Actif</span></td>
+                                <td>★ 4.8</td>
+                                <td><button class="btn-action-sm" onclick="showToast('Menu édité')">Catalogue</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pâtisserie El Mordjene</strong></td>
+                                <td>Pâtisserie / Délices</td>
+                                <td>16 - Alger</td>
+                                <td>10%</td>
+                                <td><span class="status-badge badge-active">Actif</span></td>
+                                <td>★ 4.9</td>
+                                <td><button class="btn-action-sm" onclick="showToast('Menu édité')">Catalogue</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Supermarché Ardis</strong></td>
+                                <td>Sépicerie & Supermarché</td>
+                                <td>16 - Alger</td>
+                                <td>8%</td>
+                                <td><span class="status-badge badge-active">Actif</span></td>
+                                <td>★ 4.6</td>
+                                <td><button class="btn-action-sm" onclick="showToast('Menu édité')">Catalogue</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pharmacie Centrale Alger</strong></td>
+                                <td>Santé & Pharmacie</td>
+                                <td>16 - Alger</td>
+                                <td>5%</td>
+                                <td><span class="status-badge badge-active">Actif</span></td>
+                                <td>★ 4.9</td>
+                                <td><button class="btn-action-sm" onclick="showToast('Convention vérifiée')">Catalogue</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 4. CUSTOMERS SECTION -->
+            <section id="section-customers" class="tab-section">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title" data-i18n="customers_title">Clients & Utilisateurs Enregistrés</h1>
+                        <p class="page-desc" data-i18n="customers_desc">Gestion des comptes clients, adresses favorites et fidélité.</p>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header-bar">
+                        <div class="table-title" data-i18n="customers_table_title">Répertoire Clients</div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Téléphone</th>
+                                <th>Wilaya Principale</th>
+                                <th>Commandes</th>
+                                <th>Niveau Fidélité</th>
+                                <th>Dernière Activité</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Farid Belkacem</strong></td>
+                                <td>0555 12 34 56</td>
+                                <td>16 - Alger (Bab Ezzouar)</td>
+                                <td>24</td>
+                                <td><span class="status-badge" style="background:#FFF7DB; color:#B38600;">👑 Gold VIP</span></td>
+                                <td>Aujourd'hui 14:15</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Amina Cherif</strong></td>
+                                <td>0770 98 76 54</td>
+                                <td>16 - Alger (Hydra)</td>
+                                <td>18</td>
+                                <td><span class="status-badge" style="background:#E8F1FC; color:#123B72;">🥈 Silver</span></td>
+                                <td>Aujourd'hui 14:02</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Yacine Brahimi</strong></td>
+                                <td>0661 11 22 33</td>
+                                <td>16 - Alger (Kouba)</td>
+                                <td>42</td>
+                                <td><span class="status-badge" style="background:#FFF7DB; color:#B38600;">👑 Gold VIP</span></td>
+                                <td>Aujourd'hui 13:40</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 5. STATISTICS SECTION -->
+            <section id="section-stats" class="tab-section">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title" data-i18n="stats_title">Rapports & Statistiques Financières</h1>
+                        <p class="page-desc" data-i18n="stats_desc">Indicateurs de performance consolidés en Dinars Algériens (DZD).</p>
+                    </div>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <span class="kpi-label">Revenus Plateforme (Commissions)</span>
+                        <span class="kpi-value" style="color: var(--brand-primary-blue);">461 424 DZD</span>
+                        <span class="kpi-trend" style="color: var(--status-success);">↑ 12% des volumes bruts</span>
+                    </div>
+                    <div class="kpi-card">
+                        <span class="kpi-label">Total Rémunérations Livreurs</span>
+                        <span class="kpi-value" style="color: var(--brand-secondary-blue);">985 000 DZD</span>
+                        <span class="kpi-trend" style="color: var(--status-success);">100% payé sans retard</span>
+                    </div>
+                    <div class="kpi-card">
+                        <span class="kpi-label">Taux d'Atteinte SLA & OTP</span>
+                        <span class="kpi-value" style="color: var(--status-success);">98.6%</span>
+                        <span class="kpi-trend">Temps moyen: 26.4 min</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. SETTINGS & SECURITY SECTION -->
+            <section id="section-settings" class="tab-section">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title" data-i18n="settings_title">Sécurité & Architecture Supabase</h1>
+                        <p class="page-desc" data-i18n="settings_desc">Audit de Row Level Security (RLS), Webhooks de Paiement et Clés d'API.</p>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header-bar">
+                        <div class="table-title">État des Politiques Supabase RLS</div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Table PostgreSQL</th>
+                                <th>RLS Activé</th>
+                                <th>Politique SELECT</th>
+                                <th>Politique INSERT / UPDATE</th>
+                                <th>Statut d'Audit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>orders</code></td>
+                                <td><span class="status-badge badge-active">OUI (Enforced)</span></td>
+                                <td>Client propre / Livreur assigné / Admin</td>
+                                <td>Fonction RPC <code>create_order</code> / Statut strict</td>
+                                <td><span class="status-badge badge-active">✔ Conforme</span></td>
+                            </tr>
+                            <tr>
+                                <td><code>drivers</code></td>
+                                <td><span class="status-badge badge-active">OUI (Enforced)</span></td>
+                                <td>Public (nom + note) / Admin complet</td>
+                                <td>Livreur certifié uniquement</td>
+                                <td><span class="status-badge badge-active">✔ Conforme</span></td>
+                            </tr>
+                            <tr>
+                                <td><code>payment_transactions</code></td>
+                                <td><span class="status-badge badge-active">OUI (Enforced)</span></td>
+                                <td>Admin & Service Role uniquement</td>
+                                <td>Webhook Edahabia / BaridiMob sécurisé</td>
+                                <td><span class="status-badge badge-active">✔ Conforme</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Security System Notice -->
+                <div class="kpi-card" style="background: var(--brand-blue-container); border-color: var(--brand-secondary-blue);">
+                    <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
+                        <span style="font-size:1.4rem;">🔐</span>
+                        <strong style="color: var(--brand-primary-blue);" data-i18n="sec_title">Intégrité Supabase & RLS (Row Level Security)</strong>
+                    </div>
+                    <p style="font-size:0.85rem; color: var(--brand-primary-blue); line-height: 1.5;" data-i18n="sec_desc">
+                        Toutes les requêtes de ce tableau de bord exécutent des fonctions RPC PostgreSQL chiffrées avec audit des rôles (Admin). Les transactions financières Edahabia / CIB sont verrouillées à la ligne et protégées contre toute modification frauduleuse.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification Element -->
+    <div id="toastNotice">
+        <span>✨</span>
+        <span id="toastMessage">Action effectuée</span>
+    </div>
+
+    <script>
+        let isArabic = false;
+
+        const i18n = {
+            fr: {
+                appName: "DZ Delivery Pro",
+                appSubtitle: "Plateforme Nationale de Livraison • 58 Wilayas",
+                adminRole: "Super Administrateur",
+                btnLang: "العربية",
+                btn_export: "📥 Exporter le Rapport Journalier",
+                kpi_gmv: "Volume d'Affaires Brut (GMV)",
+                kpi_active: "Commandes en Transit",
+                kpi_drivers: "Livreurs en Ligne",
+                kpi_otp: "Vérifications OTP",
+                table_recent_orders: "Commandes Récentes en Temps Réel",
+                nav_orders: "Commandes & Dispatch",
+                nav_drivers: "Flotte Livreurs",
+                nav_merchants: "Commerces Partenaires",
+                nav_customers: "Clients & Comptes",
+                nav_stats: "Statistiques & Revenus",
+                nav_settings: "Paramètres & Sécurité",
+                orders_title: "Centre des Opérations & Dispatch",
+                orders_desc: "Supervision en direct des livraisons et flux en temps réel à Alger et dans 58 wilayas.",
+                drivers_title: "Flotte de Livreurs",
+                drivers_desc: "Gestion des chauffeurs partenaires, disponibilité en direct et approbations de documents.",
+                btn_add_driver: "🛵 Inscrire un Nouveau Livreur",
+                drivers_table_title: "Livreurs Enregistrés & Vérifiés",
+                merchants_title: "Commerces & Établissements Partenaires",
+                merchants_desc: "Gestion du catalogue, validation des commissions et conventions partenaires.",
+                btn_add_merchant: "🏪 Conventionner un Commerce",
+                merchants_table_title: "Liste des Partenaires Agréés",
+                customers_title: "Clients & Utilisateurs Enregistrés",
+                customers_desc: "Gestion des comptes clients, adresses favorites et fidélité.",
+                customers_table_title: "Répertoire Clients",
+                stats_title: "Rapports & Statistiques Financières",
+                stats_desc: "Indicateurs de performance consolidés en Dinars Algériens (DZD).",
+                settings_title: "Sécurité & Architecture Supabase",
+                settings_desc: "Audit de Row Level Security (RLS), Webhooks de Paiement et Clés d'API.",
+                sec_title: "Intégrité Supabase & RLS (Row Level Security)",
+                sec_desc: "Toutes les requêtes de ce tableau de bord exécutent des fonctions RPC PostgreSQL chiffrées avec audit des rôles (Admin). Les transactions financières Edahabia / CIB sont verrouillées à la ligne et protégées contre toute modification frauduleuse."
+            },
+            ar: {
+                appName: "ديزاد دليفري برو",
+                appSubtitle: "المنصة الوطنية للتوصيل السريع • 58 ولاية",
+                adminRole: "المسؤول العام",
+                btnLang: "Français",
+                btn_export: "📥 استخراج التقرير اليومي",
+                kpi_gmv: "إجمالي المعاملات التجارية (GMV)",
+                kpi_active: "الطلبات الجارية في الطريق",
+                kpi_drivers: "السائقون المتصلون حالياً",
+                kpi_otp: "نسبة التحقق برمز OTP",
+                table_recent_orders: "الطلبات الأخيرة في الوقت الفعلي",
+                nav_orders: "الطلبات وتوزيع المهام",
+                nav_drivers: "أسطول السائقين",
+                nav_merchants: "المتاجر والمطاعم",
+                nav_customers: "الزبائن والحسابات",
+                nav_stats: "الإحصائيات والأرباح",
+                nav_settings: "الإعدادات والأمان",
+                orders_title: "مركز العمليات وتوزيع المهام",
+                orders_desc: "متابعة مباشرة لعمليات التوصيل، المعاملات المالية، والأسطول في الجزائر وجميع الولايات.",
+                drivers_title: "أسطول السائقين والموصّلين",
+                drivers_desc: "إدارة السائقين الشركاء، التوافر اللحظي واعتماد وثائق التسجيل.",
+                btn_add_driver: "🛵 تسجيل موصّل جديد",
+                drivers_table_title: "السائقون المعتمدون في النظام",
+                merchants_title: "المتاجر والشركاء المعتمدون",
+                merchants_desc: "إدارة كتالوج المنتجات، نسب العمولات واتفاقيات الشراكة.",
+                btn_add_merchant: "🏪 توثيق متجر جديد",
+                merchants_table_title: "قائمة الشركاء التجاريين",
+                customers_title: "الزبائن والمستخدمون المسجلون",
+                customers_desc: "إدارة حسابات الزبائن، العناوين المفضلة ونقاط الولاء.",
+                customers_table_title: "دليل الزبائن",
+                stats_title: "التقارير والإحصائيات المالية",
+                stats_desc: "مؤشرات الأداء الموحدة بالدينار الجزائري (د.ج).",
+                settings_title: "الأمان وحماية Supabase RLS",
+                settings_desc: "تدقيق سياسات الأمان على مستوى الصفوف (RLS) ومفاتيح الربط البرمجي.",
+                sec_title: "نزاهة قاعدة البيانات وأمان Supabase RLS",
+                sec_desc: "جميع العمليات في لوحة التحكم تنفذ عبر دوال PostgreSQL مشفرة ومدققة وفق صلاحيات الإدارة. المعاملات المالية محمية ضد أي تزوير أو تلاعب."
+            }
+        };
+
+        function toggleLanguage() {
+            isArabic = !isArabic;
+            const lang = isArabic ? 'ar' : 'fr';
+            document.documentElement.lang = lang;
+            document.documentElement.dir = isArabic ? 'rtl' : 'ltr';
+
+            const dict = i18n[lang];
+            document.getElementById('lblAppName').textContent = dict.appName;
+            document.getElementById('lblAppSubtitle').textContent = dict.appSubtitle;
+            document.getElementById('lblAdminRole').textContent = dict.adminRole;
+            document.getElementById('btnLangToggle').textContent = dict.btnLang;
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.textContent = dict[key];
+                }
+            });
+        }
+
+        function switchTab(tabName, el) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            el.classList.add('active');
+
+            document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
+            const targetSection = document.getElementById('section-' + tabName);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+        }
+
+        function filterOrdersTable() {
+            const query = (document.getElementById('orderSearch').value || '').toLowerCase();
+            const wilaya = document.getElementById('wilayaFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const rows = document.querySelectorAll('#ordersTableBody tr');
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                const matchesQuery = !query || text.includes(query);
+                const matchesWilaya = !wilaya || text.includes(wilaya);
+                const matchesStatus = !status || text.includes(status);
+
+                row.style.display = (matchesQuery && matchesWilaya && matchesStatus) ? '' : 'none';
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotice');
+            const toastMsg = document.getElementById('toastMessage');
+            toastMsg.textContent = msg;
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
